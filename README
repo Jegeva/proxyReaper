@@ -46,7 +46,7 @@ if ($response->is_success) {
     parseXML($response->decoded_content);
 }
 
-sub parseXML {
+sub parseXML { 
 	my $xmlContent = shift;
 	my $string;
 	return unless defined($xmlContent);
@@ -57,7 +57,7 @@ sub parseXML {
 	foreach my $n ($nodes->get_nodelist) {
 	    $string = $n->find('ip')->string_value .";" ;
 	    $string .= $n->find('port')->string_value .";" ;
-	    if($n->find('type')->string_value =~ "Socks"){
+	    if($n->find('type')->string_value =~ "Socks"){ 
 		$string .= lc($n->find('type')->string_value). ";" ;
 	    }else{
 		$string .= "http";
