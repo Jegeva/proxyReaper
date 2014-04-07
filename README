@@ -1,1 +1,77 @@
-<html><body>You are being <a href="https://raw.githubusercontent.com/Jegeva/proxyReaper/master/README">redirected</a>.</body></html>
+This program's goal is to maintain a list of non transparent proxies.
+
+The initial goal was to bypass sites that :
+
+-prevents you to 'not participate' in their money scheme by filtering multiple usage of their 'services' (rapidwhatever...) (mainly hosting of user content) by requiring you to cought up some dough and get a subscription)... don't like that...
+
+-prevents you from automating their services (like scrapping for "pasteshare" before the powers that be wants the paste erased)... 
+
+Well you can also use it for privacy (your own ISP will see what's happening if you don't use https, and even there...)
+
+this needs two external components :
+
+1) a php script that dumps the http headers like that :
+
+--------------------------------------------------
+proxyReaper;
+<?php
+echo "IP;".$_SERVER['REMOTE_ADDR']."\n";
+echo "VIA;".$_SERVER['HTTP_VIA']."\n";;
+echo "proxID;".$_SERVER['HTTP_X_PROXY_ID']."\n";;
+echo "xff;".$_SERVER['HTTP_X_FORWARDED_FOR']."\n";;
+echo "forw;".$_SERVER['HTTP_FORWARDED']."\n";;
+?>
+--------------------------------------------------
+
+2) a script that outputs 1 proxy per line like :
+
+#! /usr/bin/perl
+
+use LWP::UserAgent;
+use XML::XPath;
+use XML::XPath::XMLParser;
+
+
+
+my $xroxyUrl	= "http://www.xroxy.com/rss";
+my $xroxyUA	= "Xroxy-Aggregator PHP v0.3";
+
+my $ua = LWP::UserAgent->new;
+	$ua->timeout(30);
+	$ua->agent($xroxyUA);
+
+my $response = $ua->get($xroxyUrl);
+if ($response->is_success) {
+   # print $response->decoded_content;
+    parseXML($response->decoded_content);
+}
+
+sub parseXML {
+	my $xmlContent = shift;
+	my $string;
+	return unless defined($xmlContent);
+	$xmlContent =~ s/\<\!\[CDATA\[//g;
+	$xmlContent =~ s/\]\]\>//g;
+	my $xml = XML::XPath->new(xml => $xmlContent);
+	my $nodes = $xml->find('/rss/channel/item/description/proxy');
+	foreach my $n ($nodes->get_nodelist) {
+	    $string = $n->find('ip')->string_value .";" ;
+	    $string .= $n->find('port')->string_value .";" ;
+	    if($n->find('type')->string_value =~ "Socks"){
+		$string .= lc($n->find('type')->string_value). ";" ;
+	    }else{
+		$string .= "http";
+		if($n->find('ssl')->string_value eq "true" ){
+		    $string .= "s";
+		}
+		$string.=";";
+	    }
+	    print $string."\n";
+	}
+}
+------------------------------------------------------------------
+
+for now it's statically defined in the main.cpp, next update, parse 
+~/.proxyReaper/sources/* that are executable.
+
+This initial commit is a PoC, i accept patches ;)
