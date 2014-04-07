@@ -9,7 +9,7 @@
 #include <dirent.h>
 #include <getopt.h>
 
-#define __PROXYREAPER_TEST_URL__ "http://greynet.eu/div/headers.php"
+#define __PROXYREAPER_TEST_URL__ "http://seeREADME/path/to/headers.php"
 #define __PROXYREAPER_VERSION__ "0.1a"
 
 using namespace std;
