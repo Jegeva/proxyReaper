@@ -8,6 +8,18 @@ The initial goal was to bypass sites that :
 
 Well you can also use it for privacy (your own ISP will see what's happening if you don't use https, and even there...)
 
+this was largely inspired by https://github.com/xme/oplb (hey xavier ;))
+but i wanted some threading, sniffed around POE but the POE http client wasn't really supporting socks out of the box.
+And i haven't done c++ in a long time.
+
+Nota : valgrind says it looses some memory due to : boost and openssl.
+If you have an idea, drop me a mail :
+
+xor this "______~___~_____~___" and "5:5:)>P='3>82>63P<02" (yeah spam you know...)
+
+
+
+
 this needs two external components :
 
 1) a php script that dumps the http headers like that :
@@ -22,6 +34,9 @@ echo "xff;".$_SERVER['HTTP_X_FORWARDED_FOR']."\n";;
 echo "forw;".$_SERVER['HTTP_FORWARDED']."\n";;
 ?>
 --------------------------------------------------
+
+will work on a local server to replace this, still have to sniff around libupnp...
+
 
 2) a script that outputs 1 proxy per line like :
 
