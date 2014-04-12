@@ -9,7 +9,7 @@
 #include <dirent.h>
 #include <getopt.h>
 
-#define __PROXYREAPER_TEST_URL__ "http://greynet.eu/div/headers.php"
+#define __PROXYREAPER_TEST_URL__ "http://READ_THE_DOCUMENTATION/div/headers.php"
 #define __PROXYREAPER_VERSION__ "0.1a"
 
 using namespace std;
@@ -34,7 +34,7 @@ string printtv(timeval* tv){
 } 
 
 string getpublicipv4(){
-	proxyReaperUrl * ipcheckUrl = new proxyReaperUrl(string("http://greynet.eu/div/ipcheck.php"));
+	proxyReaperUrl * ipcheckUrl = new proxyReaperUrl(string("http://READ_THE_DOCUMENTATION/div/ipcheck.php"));
 	
 	string ipstring = ipcheckUrl->getContent();
 	ipstring = ipstring.substr(ipstring.find(": ")+2,ipstring.length()-ipstring.find("</body")-2);
@@ -43,7 +43,7 @@ string getpublicipv4(){
 }
 
 
-
+pthread_mutex_t       mutex = PTHREAD_MUTEX_INITIALIZER;
 
 
 void threadedCheck(proxyReaperProxy* mProx,char* thread_surv){
@@ -61,7 +61,9 @@ void threadedCheck(proxyReaperProxy* mProx,char* thread_surv){
 		if(verbose)
 			cout << mProx->getUrl()->getUrl() << endl;
 		//<< content << endl;
+		pthread_mutex_lock(&mutex);
 		mapMeasure[mProx]=tv;
+		pthread_mutex_unlock(&mutex);
 		mProx->setLastcheck(time(NULL));
 		mProx->setChecknumber(mProx->getChecknumber()+1);
 		if(content.find("proxyReaper;") == string::npos){
@@ -118,7 +120,7 @@ int main(int argc,char** argv){
 
 	int c,i;
 	int available_procs = num_processors(NPROC_CURRENT_OVERRIDABLE);
-	std::cout << "ProxyReaper "<< __PROXYREAPER_VERSION__ << std::endl << "on "<< +available_procs << " processing units" << endl;
+	
 	char * prox_surv = (char*)calloc(available_procs,sizeof(char));
 	vector<std::thread*> threadvector (available_procs);
 
@@ -183,7 +185,8 @@ int main(int argc,char** argv){
 	ipv4 = getpublicipv4();
 
 	proxyReaperPersist * persist = proxyReaperPersist::get();
-
+	if(verbose)
+	  std::cout << "ProxyReaper "<< __PROXYREAPER_VERSION__ << std::endl << "on "<< +available_procs << " processing units" << endl;
 	proxyReaperSource * mSource = new proxyReaperSource("/home/jg/.proxyReaper/sources/hma.pl","");
 	persist->clean_incoming();
 	persist->store_incoming_coll(mSource->get_as_urlfragvector());
@@ -229,7 +232,7 @@ int main(int argc,char** argv){
 
 
 	fflush(NULL);
-	if(verbose)
+	if(verbose){
 		for(map<proxyReaperProxy*,timeval*>::iterator iter = mapMeasure.begin(); iter != mapMeasure.end();iter++)
 		{
 			if(iter->second){
@@ -242,6 +245,7 @@ int main(int argc,char** argv){
 
 
 		}
+	}
 
 	persist->store(sources);
 
