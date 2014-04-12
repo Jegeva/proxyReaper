@@ -12,7 +12,7 @@
 #define __PROXYREAPER_TEST_URL__ "http://greynet.eu/div/headers.php"
 #define __PROXYREAPER_VERSION__ "0.1a"
 
-using namespace std;
+using namespace std; 
 
 
 string ipv4;
@@ -42,6 +42,7 @@ string getpublicipv4(){
 	return ipstring ;
 }
 
+ 
 
 pthread_mutex_t       mutex = PTHREAD_MUTEX_INITIALIZER;
  
@@ -268,3 +269,4 @@ int main(int argc,char** argv){
 
 
 
+ 
