@@ -9,7 +9,7 @@
 #include <dirent.h>
 #include <getopt.h>
 
-#define __PROXYREAPER_TEST_URL__ "http://READ_THE_DOCUMENTATION/div/headers.php"
+#define __PROXYREAPER_TEST_URL__ "http://greynet.eu/div/headers.php"
 #define __PROXYREAPER_VERSION__ "0.1a"
 
 using namespace std;
@@ -34,7 +34,7 @@ string printtv(timeval* tv){
 } 
 
 string getpublicipv4(){
-	proxyReaperUrl * ipcheckUrl = new proxyReaperUrl(string("http://READ_THE_DOCUMENTATION/div/ipcheck.php"));
+	proxyReaperUrl * ipcheckUrl = new proxyReaperUrl(string("http://greynet.eu/div/ipcheck.php"));
 	
 	string ipstring = ipcheckUrl->getContent();
 	ipstring = ipstring.substr(ipstring.find(": ")+2,ipstring.length()-ipstring.find("</body")-2);
@@ -44,6 +44,7 @@ string getpublicipv4(){
 
 
 pthread_mutex_t       mutex = PTHREAD_MUTEX_INITIALIZER;
+ 
 
 
 void threadedCheck(proxyReaperProxy* mProx,char* thread_surv){
