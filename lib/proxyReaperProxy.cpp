@@ -150,12 +150,15 @@ void proxyReaperProxy::setWorkingchecknumber(int workingchecknumber) {
 }
 
 void proxyReaperProxy::setUrl(string url) {
+	try{
 	proxyReaperUrl * tmp= new proxyReaperUrl(url);
 	if(UrlAcceptedTypesMap.count(tmp->getScheme()) != 0){
 		this->Url=tmp;
 	}else{
 		delete tmp;
 		throw(proxyReaperProxyUnsupportedSchemeException(url));
+	}}catch(proxyReaperMalformedUrlException e){
+		;
 	}
 }
 

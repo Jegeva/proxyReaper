@@ -274,9 +274,10 @@ void proxyReaperUrl::setUrl(const string& url) {
 
 			if((port == LONG_MIN || port == LONG_MAX) && (errno == ERANGE))
 				throw(proxyReaperMalformedUrlException(url));
-			//if(!validatePort(port))	throw(proxyReaperMalformedUrlException(url));
-			
-			this->setPort(port & 0xffff);
+			if(!validatePort(port)){
+				throw(proxyReaperMalformedUrlException(url));
+			}
+			this->setPort(port);
 		}
 
 

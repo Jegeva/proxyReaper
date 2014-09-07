@@ -119,6 +119,7 @@ vector<vector <string>> proxyReaperSource::get_as_urlfragvector(){
 		free(lineCharPtr);
 	}while(read && (read != EOF));
 	fclose(fs);
+	fprintf(stderr,"execed\n");
 	return ret;
 }
 

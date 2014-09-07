@@ -201,6 +201,8 @@ proxyReaperPersist::proxyReaperPersist() {
 
 proxyReaperPersist::~proxyReaperPersist() {
 	// TODO Auto-generated destructor stub
+	cleanOldNotWorkingAndTransparents();
+	clean_incoming();
 	sqlite3_close_v2(this->db);
 }
 
@@ -338,6 +340,7 @@ int proxyReaperPersist::store(proxyReaperUrl* url){
 			throw(proxyReaperSQLLite3Exception(sqllite3Error(ret)));
 	}
 	sqlite3_finalize(statement);
+
 	return ret;
 }
 
@@ -346,13 +349,23 @@ int proxyReaperPersist::store(vector<proxyReaperProxy*> proxylist){
 	delete query("delete from proxyReaper_proxies;");
 	delete query("delete from proxyReaper_hosts;");
 	for(vector<proxyReaperProxy*>::iterator it = proxylist.begin();it != proxylist.end();it++){
-		store(*it);
+		try{
+			store(*it);
+			}catch(proxyReaperSQLLite3Exception & e){
+				; // contrain violation, most likely muliple source ref the same prox
+			}
+
 	}
 	return 0;
 }
+
 int proxyReaperPersist::store(proxyReaperProxy* proxy){
 	const proxyReaperHost* host = proxy->getHost();
+	try {
 	this->store((proxyReaperHost*)host);
+	}catch(proxyReaperSQLLite3Exception & e){
+		; // contrain violation, most likely muliple source ref the same prox
+	}
 	sqlite3_stmt * statement;
 	int ret;
 	string sql = string("insert into proxyReaper_proxies (ipv4,ipv6,scheme,port,anon_level,checknumber,last_lag,mean_lag,lastcheck,lastworkingcheck,workingchecknumber) values(?,?,?,?,?,?,?,?,?,?,?);");

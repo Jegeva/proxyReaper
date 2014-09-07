@@ -1,9 +1,9 @@
 CPP = g++
 CC = gcc
-CPPOPT = -std=c++0x -O3 -Wall
-CPPLIBOPT = -std=c++0x -fPIC -O3 -Wall -c
+CPPOPT = -std=c++0x -pg -g3 -Wall
+CPPLIBOPT = -std=c++0x -pg -fPIC -g3 -Wall -c
 CCLIBOPT = -fPIC -O0 -g3 -pg -Wall -c
-CPPSHAREDOPT = -shared -pg
+CPPSHAREDOPT = -shared -pg -g3
 CPPLIB =  -lproxyReaperlib -lcurlpp -lpthread
 CPPLIBLIB = -lcurl -lsqlite3 -lidn -lcurlpp -lboost_regex -lboost_iostreams
 
