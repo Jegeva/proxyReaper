@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <getopt.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #define __PROXYREAPER_TEST_URL__ "http://READ_THE_DOCUMENTATION/div/headers.php"
 #define __PROXYREAPER_VERSION__ "0.1a"
@@ -122,6 +124,27 @@ int main(int argc,char** argv){
 	char * prox_surv = (char*)calloc(available_procs,sizeof(char));
 	vector<std::thread*> threadvector (available_procs);
 
+
+
+int fd = open("/tmp/proxyReaper.pid",O_RDONLY);
+ FILE* stream_pid;
+
+ if(fd == -1){
+   fd = open("/tmp/proxyReaper.pid",O_CREAT,S_IRUSR|S_IWUSR);
+   if(fd == -1){
+     fprintf(stderr,"error cant create pid file\n bye !");
+     return 1;
+   }else{
+     stream_pid = fdopen(fd,"rw");
+     fprintf(stream_pid,"%d",getpid());
+     fclose(stream_pid);
+     close(fd);
+   }
+ }else{
+   fprintf(stderr,"error pid file already existing\n bye !");
+   return 1;   
+ }
+
 	while (1) {
 
 		int option_index = 0;
@@ -185,13 +208,13 @@ int main(int argc,char** argv){
 	proxyReaperPersist * persist = proxyReaperPersist::get();
 	persist->clean_incoming();
 
-	proxyReaperSource * mSource = new proxyReaperSource("~/.proxyReaper/sources/hma.pl","");
+	proxyReaperSource * mSource = new proxyReaperSource("/home/jg/.proxyReaper/sources/hma.pl","");
 //	persist->store_incoming_coll(mSource->get_as_urlfragvector());
 
 	vector<vector<string>> incoming = mSource->get_as_urlfragvector();
 
 	delete mSource;
-	mSource = new proxyReaperSource("~/.proxyReaper/sources/usproxy.pl","");
+	mSource = new proxyReaperSource("/home/jg/.proxyReaper/sources/usproxy.pl","");
 //	persist->store_incoming_coll(mSource->get_as_urlfragvector());
 
 	vector<vector<string>> incoming2 = mSource->get_as_urlfragvector();
@@ -305,6 +328,12 @@ int main(int argc,char** argv){
 	delete persist;
 	//delete mSource;
 	free(prox_surv);
+ if(unlink("/tmp/proxyReaper.pid") == -1){
+   printf("error cant remove pid file !\n");
+ }
+
+
+
 	return 0;
 }
 
