@@ -47,6 +47,12 @@ proxyReaperProxy::proxyReaperProxy(
 		ss << _scheme << "://" << _ipv6 << ":" << +_port;
 	}
 	this->setUrl(ss.str());
+	//	cout << ss.str() << endl;
+	if( this->getUrl() == NULL ){
+	  //cout << "!!!!" << _scheme << "://" <<  _ipv4 << ":" << _port <<endl;
+	  throw(proxyReaperMalformedUrlException(ss.str()));
+	}
+
 	this->anonymity = ANON_TRANSPARENT;
 	if( _level.compare(string("ANON_TRANSPARENT"))==0)
 		this->anonymity = ANON_TRANSPARENT;
@@ -150,6 +156,7 @@ void proxyReaperProxy::setWorkingchecknumber(int workingchecknumber) {
 }
 
 void proxyReaperProxy::setUrl(string url) {
+  //cout << url << endl;
 	try{
 	proxyReaperUrl * tmp= new proxyReaperUrl(url);
 	if(UrlAcceptedTypesMap.count(tmp->getScheme()) != 0){

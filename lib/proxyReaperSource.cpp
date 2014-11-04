@@ -1,3 +1,4 @@
+
 /*
  * proxyReaperSource.cpp
  *
@@ -62,8 +63,8 @@ vector<vector <string>> proxyReaperSource::get_as_urlfragvector(){
 
 	do{
 		read = fscanf(fs,"%ms",&lineCharPtr);
-		if(read && (read != EOF)){
-			//printf("%s\n",lineCharPtr);
+		if( (read) && (read != EOF)){
+		  //	printf("%s\n",lineCharPtr);
 			ipCharPtr = portCharPtr  = typeCharPtr = 0;
 			ipCharPtr = lineCharPtr;
 			i=0;

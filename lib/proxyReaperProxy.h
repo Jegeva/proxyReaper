@@ -27,7 +27,7 @@ using namespace std;
 class proxyReaperProxy: public proxyReaperHost {
 private:
 	static map<string,bool> UrlAcceptedTypesMap;
-	proxyReaperUrl * Url;
+	proxyReaperUrl * Url = NULL;
 	string protocol;
 	int protocolversion;
 	anonymity_level anonymity;
