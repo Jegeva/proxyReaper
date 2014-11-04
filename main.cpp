@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define __PROXYREAPER_TEST_URL__ "http://READ_THE_DOCUMENTATION/div/headers.php"
+#define __PROXYREAPER_TEST_URL__ "http://greynet.eu/div/headers.php"
 #define __PROXYREAPER_VERSION__ "0.1a"
 
 using namespace std;
@@ -37,7 +37,7 @@ string printtv(timeval* tv){
 
 string getpublicipv4(){
 	//proxyReaperUrl * ipcheckUrl = new proxyReaperUrl(string("http://checkip.dyndns.org/"));
-	proxyReaperUrl * ipcheckUrl = new proxyReaperUrl(string("http://READ_THE_DOCUMENTATION/div/ipcheck.php"));
+	proxyReaperUrl * ipcheckUrl = new proxyReaperUrl(string("http://greynet.eu/div/ipcheck.php"));
 	string ipstring = ipcheckUrl->getContent();
 	ipstring = ipstring.substr(ipstring.find(": ")+2,ipstring.length()-ipstring.find("</body")-2);
 	delete ipcheckUrl;
@@ -59,6 +59,7 @@ void threadedCheck(proxyReaperProxy* mProx,char* thread_surv){
 	string seenforw;
 	int strfound;
 	try{
+	  //	  cout << mProx->getUrl() << endl;
 		content=mProx->getContentTimed(testURL,tv,timeout);
 		if(verbose)
 			cout << mProx->getUrl()->getUrl() << endl;
@@ -136,7 +137,8 @@ int fd = open("/tmp/proxyReaper.pid",O_RDONLY);
      return 1;
    }else{
      stream_pid = fdopen(fd,"rw");
-     fprintf(stream_pid,"%d",getpid());
+     fprintf(stream_pid,"%d\n",getpid());
+	fflush(NULL);
      fclose(stream_pid);
      close(fd);
    }
@@ -246,6 +248,7 @@ int fd = open("/tmp/proxyReaper.pid",O_RDONLY);
 	/* dirty, not ipv6 compliant */
 	for(map<string,vector<string>>::iterator iter = incomap.begin(); iter != incomap.end();iter++){
 		try{
+		  //	  cout << 	((*iter).second)[1] << ":" << ((*iter).second)[2] << endl;
 		sources.push_back(
 				new proxyReaperProxy(
 						((*iter).second)[1],
@@ -336,6 +339,7 @@ int fd = open("/tmp/proxyReaper.pid",O_RDONLY);
 
 	return 0;
 }
+
 
 
 

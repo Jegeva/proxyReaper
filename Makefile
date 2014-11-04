@@ -1,9 +1,9 @@
 CPP = g++
 CC = gcc
-CPPOPT = -std=c++0x -pg -g3 -Wall
-CPPLIBOPT = -std=c++0x -pg -fPIC -g3 -Wall -c
-CCLIBOPT = -fPIC -O0 -g3 -pg -Wall -c
-CPPSHAREDOPT = -shared -pg -g3
+CPPOPT = -std=c++0x -Wall -g3 -pg
+CPPLIBOPT = -std=c++0x -fPIC -Wall -g3 -pg -c
+CCLIBOPT = -fPIC -O0 -Wall -g3 -pg -c
+CPPSHAREDOPT = -shared 
 CPPLIB =  -lproxyReaperlib -lcurlpp -lpthread
 CPPLIBLIB = -lcurl -lsqlite3 -lidn -lcurlpp -lboost_regex -lboost_iostreams
 
@@ -35,5 +35,7 @@ proxyReaperUrl.o : lib/proxyReaperUrl.h lib/proxyReaperUrl.cpp
 nproc.o : lib/nproc.h lib/nproc.c
 	$(CC) $(CCLIBOPT) -o nproc.o lib/nproc.c
 
+valgrind :
+	valgrind --memcheck:leak-check=full --show-reachable=yes --suppressions=./valgrind_supress_openssl.supp ./proxyReaper
 clean:
 	rm proxyReaper libproxyReaperlib.so *.o
